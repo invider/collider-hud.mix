@@ -229,28 +229,28 @@ function nodeToIcon(item) {
 
     if (node instanceof HTMLImageElement) return node
     if (sys.isFrame(node)) {
-        if (item.node.name === '/') return res.icon.home
-        if (item.name === '..') return res.icon.up
-        if (item.name.startsWith('sys')) return res.icon.sys
-        if (item.name.startsWith('lib')) return res.icon.lib
-        if (item.name.startsWith('env')) return res.icon.env
-        if (item.name.startsWith('res')) return res.icon.res
-        if (item.name.startsWith('dna')) return res.icon.dna
-        if (item.name.startsWith('lab')) return res.icon.lab
-        if (item.name.startsWith('log')) return res.icon.log
-        if (item.name.startsWith('mod')) return res.icon.mod
-        if (item.name.startsWith('cue')) return res.icon.cue
-        if (item.name.startsWith('trap')) return res.icon.trap
-        return res.icon.frame
+        if (item.node.name === '/') return res.hud.icon.home
+        if (item.name === '..') return res.hud.icon.up
+        if (item.name.startsWith('sys')) return res.hud.icon.sys
+        if (item.name.startsWith('lib')) return res.hud.icon.lib
+        if (item.name.startsWith('env')) return res.hud.icon.env
+        if (item.name.startsWith('res')) return res.hud.icon.res
+        if (item.name.startsWith('dna')) return res.hud.icon.dna
+        if (item.name.startsWith('lab')) return res.hud.icon.lab
+        if (item.name.startsWith('log')) return res.hud.icon.log
+        if (item.name.startsWith('mod')) return res.hud.icon.mod
+        if (item.name.startsWith('cue')) return res.hud.icon.cue
+        if (item.name.startsWith('trap')) return res.hud.icon.trap
+        return res.hud.icon.frame
     }
     if (sys.isFun(node)) {
-        if (/^[A-Z]/.test(item.name)) return res.icon.constructor
-        return res.icon.fun
+        if (/^[A-Z]/.test(item.name)) return res.hud.icon.constructor
+        return res.hud.icon.fun
     }
-    if (sys.isObj(node)) return res.icon.object
-    if (sys.isString(node)) return res.icon.text
-    if (sys.isArray(node)) return res.icon.array
-    return res.icon.file
+    if (sys.isObj(node)) return res.hud.icon.object
+    if (sys.isString(node)) return res.hud.icon.text
+    if (sys.isArray(node)) return res.hud.icon.array
+    return res.hud.icon.file
 }
 
 NodeList.prototype.drawItem = function(item, i, iy) {
