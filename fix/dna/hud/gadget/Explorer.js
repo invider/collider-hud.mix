@@ -232,22 +232,24 @@ function nodeToIcon(item) {
         if (item.node.name === '/') return res.icon.home
         if (item.name === '..') return res.icon.up
         if (item.name.startsWith('sys')) return res.icon.sys
-        if (item.name.startsWith('lib')) return res.icon.java
-        if (item.name.startsWith('env')) return res.icon.sliders
-        if (item.name.startsWith('res')) return res.icon.art
-        if (item.name.startsWith('dna')) return res.icon.chip
-        if (item.name.startsWith('lab')) return res.icon.robot
-        if (item.name.startsWith('log')) return res.icon.scroll
+        if (item.name.startsWith('lib')) return res.icon.lib
+        if (item.name.startsWith('env')) return res.icon.env
+        if (item.name.startsWith('res')) return res.icon.res
+        if (item.name.startsWith('dna')) return res.icon.dna
+        if (item.name.startsWith('lab')) return res.icon.lab
+        if (item.name.startsWith('log')) return res.icon.log
         if (item.name.startsWith('mod')) return res.icon.mod
-        if (item.name.startsWith('trap')) return res.icon.joystick
-        return res.icon.folder
+        if (item.name.startsWith('cue')) return res.icon.cue
+        if (item.name.startsWith('trap')) return res.icon.trap
+        return res.icon.frame
     }
     if (sys.isFun(node)) {
         if (/^[A-Z]/.test(item.name)) return res.icon.constructor
-        return res.icon.blocks
+        return res.icon.fun
     }
     if (sys.isObj(node)) return res.icon.object
     if (sys.isString(node)) return res.icon.text
+    if (sys.isArray(node)) return res.icon.array
     return res.icon.file
 }
 
@@ -257,6 +259,7 @@ NodeList.prototype.drawItem = function(item, i, iy) {
     const iconToTextSpacing = 10
     const magnify = 3
 
+    if (!nodeToIcon(item)) console.log(item.name)
     if (i === this.selected) {
         ctx.fillStyle = this.color.selected
         ctx.drawImage(nodeToIcon(item), x-magnify, iy-magnify, h+magnify*2, h+magnify*2)
@@ -268,9 +271,9 @@ NodeList.prototype.drawItem = function(item, i, iy) {
     x += this.itemHeight() + iconToTextSpacing
 
     ctx.font = this.font
-    ctx.textBaseline = 'top'
+    ctx.textBaseline = 'center'
     ctx.textAlign = "left"
-    ctx.fillText(item.name, x, iy);
+    ctx.fillText(item.name, x, iy + this.itemHeight()/2)
     return h
 }
 
@@ -298,6 +301,7 @@ const Explorer = function(dat) {
         y: 0,
         w: 10,
         h: 10,
+        itemsPadding: 10,
     }), 'pane')
     this.pane.updatePath()
     this.adjust()
