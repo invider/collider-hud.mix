@@ -23,11 +23,7 @@ const ContentPane = function(dat) {
 ContentPane.prototype = Object.create(Pane.prototype)
 
 ContentPane.prototype.drawContent = function() {
-    // make sure we are on top of things
-    if (!this.__._ls[this.__._ls.length-1] === this) {
-        this.__.detach(this)
-        this.__.attach(this)
-    }
+    this.__.verifyZPosition()
     ctx.fillStyle = '#000000'
     ctx.fillRect(0, 0, this.w, this.h)
 
@@ -103,5 +99,14 @@ const Magnify = function(dat) {
     sys.augment(this, dat)
 }
 Magnify.prototype = Object.create(Window.prototype)
+
+Magnify.prototype.verifyZPosition = function() {
+    // make sure we are on top of things
+    if (!(this.__._ls[this.__._ls.length-1] instanceof Magnify)) {
+        log.out('fixing POS for ' + (this.__._ls[this.__._ls.length-1] instanceof Magnify))
+        this.__.detach(this)
+        this.__.attach(this)
+    }
+}
 
 module.exports = Magnify
