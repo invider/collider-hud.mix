@@ -10,7 +10,7 @@ const Touch = function(dat) {
     sys.augment(this, dat)
 }
 Touch.prototype.draw = function() {
-    //ctx.fillStyle = '#201010'
+    //ctx.fillStyle = '#ff0000'
     //ctx.fillRect(this.x, this.y, this.w, this.h)
 }
 
@@ -26,12 +26,15 @@ Bar.prototype.adjust = function() {
 
     const p = s.pos/s.max
     const l = s.span/s.max
-    this.y = this.by + this.bh*p
-    this.h = this.bh*l
+    this.y = lib.math.limitMin(this.by + this.bh*p, s.barPadding)
+    this.h = lib.math.limitMax(this.bh*l, s.h - s.barPadding*2)
+    this.w = s.w - s.barPadding*2
 
     up.h = this.y
+    up.w = this.w
     down.y = this.y + this.h
     down.h = s.h - down.y
+    down.w = this.w
     
 }
 Bar.prototype.draw = function() {
@@ -116,18 +119,37 @@ Slider.prototype.onMouseUp = function(x, y, e) {
 
 Slider.prototype.onMouseWheel = function(d, x, y, e) {
     if (d < 0) {
-        this.drag(-this.scrollSpeed)
-    } else if (d > 0) {
         this.drag(this.scrollSpeed)
+    } else if (d > 0) {
+        this.drag(-this.scrollSpeed)
     }
 }
 
 Slider.prototype.drag = function(step) {
-    this.pos = lib.math.limit(this.pos+step, 0, this.max-this.span)
+    this.slide(step)
     this.onScroll(this.pos)
 }
 
 Slider.prototype.onScroll = function(pos) {}
+
+Slider.prototype.slide = function(step) {
+    const maxPos = lib.math.limitMin(this.max-this.span, 0)
+    this.pos = lib.math.limit(this.pos+step, 0, maxPos)
+}
+
+Slider.prototype.set = function(pos) {
+    const maxPos = lib.math.limitMin(this.max-this.span, 0)
+    this.pos = lib.math.limit(pos, 0, maxPos)
+}
+
+Slider.prototype.val = function() {
+    return Math.round(this.pos)
+}
+
+Slider.prototype.top = function() {
+    const top = Math.round(this.pos + this.span)
+    return lib.math.limitMax(top, this.max)
+}
 
 Slider.prototype.drawBackground = function() {
     if (this.active) ctx.fillStyle = '#45454570'
