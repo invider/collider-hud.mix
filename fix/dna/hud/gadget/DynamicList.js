@@ -7,7 +7,7 @@ const Slider = dna.hud.gadget.Slider
 
 let instances = 0
 const DynamicList = function(dat) {
-    this.name = 'dlist' + ++instances
+    if (!this.name) this.name = 'dlist' + ++instances
 
     this.clip = true
     this.disabled = false
@@ -127,9 +127,9 @@ DynamicList.prototype.onKeyUp = function(e) {}
 DynamicList.prototype.onMouseWheel = function(d, x, y, e) {
     if (x <= this.slider.w) return Container.prototype.onMouseWheel.call(this, d, x, y, e)
     if (d < 0) {
-        this.moveCursor(-1)
-    } else if (d > 0) {
         this.moveCursor(1)
+    } else if (d > 0) {
+        this.moveCursor(-1)
     }
 }
 
