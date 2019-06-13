@@ -97,7 +97,10 @@ NodeList.prototype.updatePath = function() {
         path = name + '/' + path
     }
     if (path === 'anonymous') this.__.status = ''
-    else this.__.status = path
+    else {
+        this.__.status = path
+        this.__.lastPath = path
+    }
 }
 
 NodeList.prototype.item = function(i, d) {
@@ -138,6 +141,47 @@ NodeList.prototype.item = function(i, d) {
                 node: dir[keys[i-sh]],
             }
         }
+    }
+}
+
+NodeList.prototype.open = function(next) {
+    if (next && (sys.isObj(next) || sys.isFrame(next))) {
+        this.lastName.push(findName(next))
+        this.lastPos.push(this.pos)
+        this.pos = 0
+        this.selected = 0
+        this.slider.pos = 0
+        this.__.trail.push(this.__.dir)
+        if (sys.isFrame(next)) {
+            this.__.dir = next
+            //this.max = next._ls.length
+        } else if (sys.isObj(next)) {
+            // normalize first
+            this.__.dir = next
+            //this.max = 0
+            for (let k in next) this.max++
+            /*
+            // Why did I make that?
+            this.__.dir = {
+                _dir: {},
+                _ls: [],
+            }
+
+            Object.keys(next).forEach(k => {
+                this.__.dir[k] = next[k]
+                if (!k.startsWith('_')) {
+                    this.__.dir._dir[k] = next[k]
+                    this.__.dir._ls.push(next[k])
+                }
+            })
+            this.max = this.__.dir._ls.length
+            */
+        }
+        this.updatePath()
+        this.adjust()
+    } else {
+        log.out(next)
+        log.dump(next)
     }
 }
 
@@ -182,45 +226,8 @@ NodeList.prototype.onItemAction = function(i, action) {
         }
     } else {
         const next = item.node
-        if (next && (sys.isObj(next) || sys.isFrame(next))) {
-            this.lastName.push(findName(next))
-            this.lastPos.push(this.pos)
-            this.lastSelect.push(i)
-            this.pos = 0
-            this.selected = 0
-            this.slider.pos = 0
-            this.__.trail.push(this.__.dir)
-            if (sys.isFrame(next)) {
-                this.__.dir = next
-                //this.max = next._ls.length
-            } else if (sys.isObj(next)) {
-                // normalize first
-                this.__.dir = next
-                //this.max = 0
-                for (let k in next) this.max++
-                /*
-                // Why did I make that?
-                this.__.dir = {
-                    _dir: {},
-                    _ls: [],
-                }
-
-                Object.keys(next).forEach(k => {
-                    this.__.dir[k] = next[k]
-                    if (!k.startsWith('_')) {
-                        this.__.dir._dir[k] = next[k]
-                        this.__.dir._ls.push(next[k])
-                    }
-                })
-                this.max = this.__.dir._ls.length
-                */
-            }
-            this.updatePath()
-            this.adjust()
-        } else {
-            log.out(next)
-            log.dump(next)
-        }
+        this.open(next)
+        this.lastSelect.push(i)
     }
 }
 
@@ -307,6 +314,10 @@ const Explorer = function(dat) {
     this.adjust()
 }
 Explorer.prototype = Object.create(Window.prototype)
+
+Explorer.prototype.open = function(next) {
+    this.pane.open(next)
+}
 
 module.exports = Explorer
 
