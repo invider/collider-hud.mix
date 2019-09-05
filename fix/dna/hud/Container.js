@@ -171,6 +171,51 @@ Container.prototype.onMouseWheel = function(d, x, y, e) {
         }
     })
 }
+
+Container.prototype.onTouchStart = function(x, y, e) {
+    if (x < 0 || y < 0 || x > this.w || y > this.h) return
+    //log.debug('touch down on [' + this.name + '] @' + x + 'x' + y)
+
+    let focusPending = true
+    for (let i = this._ls.length-1; i >= 0; i--) {
+        const g = this._ls[i]
+        const lx = x - g.x
+        const ly = y - g.y
+        if (focusPending && lx >= 0 && lx <= g.w && ly >= 0 && ly <= g.h) {
+            if (sys.isFun(g.onTouchStart)) {
+                g.onTouchStart(lx, ly, e)
+            }
+            if (sys.isFun(g.onTouchDrag)) {
+                this.captureTouch(g)
+            }
+            if (sys.isFun(g.onFocus)) {
+                this.captureFocus(g)
+                if (!g.keepZ) this.moveOnTop(i)
+            }
+            focusPending = false
+
+        } else {
+            this.releaseFocus(g)
+        }
+    }
+    return !focusPending
+}
+
+Container.prototype.onTouchEnd = function(x, y, b, e) {
+    if (x < 0 || y < 0 || x > this.w || y > this.h) return
+    //log.debug('touch end on [' + this.name + '] @' + x + 'x' + y)
+
+    this._ls.forEach(g => {
+        if (sys.isFun(g.onTouchEnd)) {
+            const lx = x - g.x
+            const ly = y - g.y
+            if (!g._captured && (lx >= 0 && lx <= g.w && ly >= 0 && ly <= g.h)) {
+                g.onTouchEnd(lx, ly, e)
+            }
+        }
+    })
+}
+
 Container.prototype.onReleasedFocus = function() {
     this._ls.forEach(g => {
         if (sys.isFun(g.onFocus)) {
@@ -189,6 +234,14 @@ Container.prototype.captureMouse = function(gadget) {
 
 Container.prototype.releaseMouse = function(gadget) {
     this.__.releaseMouse(gadget)
+}
+
+Container.prototype.captureTouch = function(gadget) {
+    this.__.captureTouch(gadget)
+}
+
+Container.prototype.releaseTouch = function(gadget) {
+    this.__.releaseTouch(gadget)
 }
 
 Container.prototype.captureFocus = function(gadget) {

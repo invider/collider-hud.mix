@@ -9,6 +9,7 @@ let Hud = function(dat) {
     this.span = true
     this.transparent = true
     this.captured = []
+    this.touched = []
     this.focused = []
 
     this.x = 0
@@ -58,6 +59,18 @@ let Hud = function(dat) {
         let x = e.pageX - hud.x
         let y = e.pageY - hud.y
         hud.onMouseWheel(e.wheelDelta, x, y, e)
+    })
+
+    sys.after(trap, 'touchStart', function(e) {
+        let x = e.pageX - hud.x
+        let y = e.pageY - hud.y
+        hud.onTouchStart(x, y, e)
+    })
+
+    sys.after(trap, 'touchEnd', function(e) {
+        let x = e.pageX - hud.x
+        let y = e.pageY - hud.y
+        hud.onTouchEnd(x, y, e)
     })
 
     sys.after(trap, 'keyDown', function(e) {
@@ -119,6 +132,22 @@ Hud.prototype.onMouseMove = function(x, y, e) {
     Container.prototype.onMouseMove.call(this, x, y, e)
 }
 
+Hud.prototype.onTouchStart = function(x, y, e) {
+    this.touched.forEach(g => {
+        if (sys.isFun(g.onTouchStart)) g.onTouchStart(x, y, e)
+    })
+    return Container.prototype.onTouchStart.call(this, x, y, e)
+}
+
+Hud.prototype.onTouchEnd = function(x, y, e) {
+    this.touched.forEach(g => {
+        if (sys.isFun(g.onTouchEnd)) g.onTouchEnd(x, y, e)
+    })
+    Container.prototype.onTouchEnd.call(this, x, y, e)
+    this.releaseTouch()
+}
+
+
 Hud.prototype.onKeyDown = function(e) {
     this.focused.forEach(g => {
         if (sys.isFun(g.onKeyDown)) g.onKeyDown(e)
@@ -148,6 +177,18 @@ Hud.prototype.releaseMouse = function() {
         g._captured = false
     })
     this.captured = []
+}
+
+Hud.prototype.captureTouch = function(gadget) {
+    gadget._touched = true
+    if (this.touched.indexOf(gadget) < 0) this.touched.push(gadget)
+}
+
+Hud.prototype.releaseTouch = function() {
+    this.touched.forEach(g => {
+        g._touched = false
+    })
+    this.touched = []
 }
 
 Hud.prototype.captureFocus = function(gadget) {
