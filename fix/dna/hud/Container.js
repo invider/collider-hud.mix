@@ -181,8 +181,14 @@ Container.prototype.onTouchStart = function(x, y, e) {
         const g = this._ls[i]
         const lx = x - g.x
         const ly = y - g.y
+        env.statusInfo.t1 = 'picking ' + g.name + ' @'
+            + Math.round(lx) + 'x' + Math.round(ly)
         if (focusPending && lx >= 0 && lx <= g.w && ly >= 0 && ly <= g.h) {
+            env.statusInfo.t1 = Math.round(lab.world.saucer.x)
+                + ': ' + ' fit with coords ' + g.name
+
             if (sys.isFun(g.onTouchStart)) {
+                env.statusInfo.t1 = lab.world.saucer.x + ': ' + ' got the fun!'
                 g.onTouchStart(lx, ly, e)
             }
             if (sys.isFun(g.onTouchDrag)) {

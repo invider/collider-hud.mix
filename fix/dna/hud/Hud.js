@@ -62,14 +62,14 @@ let Hud = function(dat) {
     })
 
     sys.after(trap, 'touchStart', function(e) {
-        let x = e.pageX - hud.x
-        let y = e.pageY - hud.y
+        let x = e.touches[0].clientX * (ctx.width/window.innerWidth) - hud.x
+        let y = e.touches[0].clientY * (ctx.height/window.innerHeight) - hud.y
         hud.onTouchStart(x, y, e)
     })
 
     sys.after(trap, 'touchEnd', function(e) {
-        let x = e.pageX - hud.x
-        let y = e.pageY - hud.y
+        let x = e.touches[0].clientX * (ctx.width/window.innerWidth) - hud.x
+        let y = e.touches[0].clientY * (ctx.height/window.innerHeight) - hud.y
         hud.onTouchEnd(x, y, e)
     })
 
@@ -132,12 +132,14 @@ Hud.prototype.onMouseMove = function(x, y, e) {
     Container.prototype.onMouseMove.call(this, x, y, e)
 }
 
+/*
 Hud.prototype.onTouchStart = function(x, y, e) {
     this.touched.forEach(g => {
         if (sys.isFun(g.onTouchStart)) g.onTouchStart(x, y, e)
     })
     return Container.prototype.onTouchStart.call(this, x, y, e)
 }
+*/
 
 Hud.prototype.onTouchEnd = function(x, y, e) {
     this.touched.forEach(g => {
