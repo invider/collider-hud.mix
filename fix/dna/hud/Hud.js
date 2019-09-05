@@ -68,9 +68,7 @@ let Hud = function(dat) {
     })
 
     sys.after(trap, 'touchEnd', function(e) {
-        let x = e.touches[0].clientX * (ctx.width/window.innerWidth) - hud.x
-        let y = e.touches[0].clientY * (ctx.height/window.innerHeight) - hud.y
-        hud.onTouchEnd(x, y, e)
+        hud.onTouchEnd(e)
     })
 
     sys.after(trap, 'keyDown', function(e) {
