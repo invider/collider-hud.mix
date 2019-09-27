@@ -26,8 +26,8 @@ Bar.prototype.adjust = function() {
 
     const p = s.pos/s.max
     const l = s.span/s.max
-    this.y = lib.math.limitMin(this.by + this.bh*p, s.barPadding)
-    this.h = lib.math.limitMax(this.bh*l, s.h - s.barPadding*2)
+    this.y = max(this.by + this.bh*p, s.barPadding)
+    this.h = min(this.bh*l, s.h - s.barPadding*2)
     this.w = s.w - s.barPadding*2
 
     up.h = this.y
@@ -133,13 +133,13 @@ Slider.prototype.drag = function(step) {
 Slider.prototype.onScroll = function(pos) {}
 
 Slider.prototype.slide = function(step) {
-    const maxPos = lib.math.limitMin(this.max-this.span, 0)
-    this.pos = lib.math.limit(this.pos+step, 0, maxPos)
+    const maxPos = max(this.max-this.span, 0)
+    this.pos = limit(this.pos+step, 0, maxPos)
 }
 
 Slider.prototype.set = function(pos) {
-    const maxPos = lib.math.limitMin(this.max-this.span, 0)
-    this.pos = lib.math.limit(pos, 0, maxPos)
+    const maxPos = max(this.max-this.span, 0)
+    this.pos = limit(pos, 0, maxPos)
 }
 
 Slider.prototype.val = function() {
@@ -148,7 +148,7 @@ Slider.prototype.val = function() {
 
 Slider.prototype.top = function() {
     const top = Math.round(this.pos + this.span)
-    return lib.math.limitMax(top, this.max)
+    return min(top, this.max)
 }
 
 Slider.prototype.drawBackground = function() {
