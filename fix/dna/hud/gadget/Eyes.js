@@ -36,12 +36,12 @@ Eyes.prototype.draw = function() {
     // pupils
     ctx.fillStyle = '#000000'
 
-    const a1 = lib.math.targetAngle(cx1, cy, env.mouseX, env.mouseY)
+    const a1 = lib.math.targetAngle(cx1, cy, env.mouse.x, env.mouse.y)
     ctx.beginPath();
     ctx.arc(cx1 + Math.sin(a1)*this.pupilS, cy + Math.cos(a1)*this.pupilS, this.pupilR, 0, 2*Math.PI);
     ctx.fill();
 
-    const a2 = lib.math.targetAngle(cx2, cy, env.mouseX, env.mouseY)
+    const a2 = lib.math.targetAngle(cx2, cy, env.mouse.x, env.mouse.y)
     ctx.beginPath();
     ctx.arc(cx2 + Math.sin(a2)*this.pupilS, cy + Math.cos(a2)*this.pupilS, this.pupilR, 0, 2*Math.PI);
     ctx.fill();

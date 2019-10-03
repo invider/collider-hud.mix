@@ -30,9 +30,9 @@ ContentPane.prototype.drawContent = function() {
     const mx = Math.ceil(this.__.hRes/2)
     const my = Math.ceil(this.__.vRes/2)
 
-    if (env.mouseX !== this.lx || env.mouseY !== this.ly) {
-        this.lx = env.mouseX
-        this.ly = env.mouseY
+    if (env.mouse.x !== this.lx || env.mouse.y !== this.ly) {
+        this.lx = env.mouse.x
+        this.ly = env.mouse.y
         const baseX = this.lx - mx
         const baseY = this.ly - my 
 
