@@ -39,6 +39,10 @@ Container.prototype.adjust = function() {
     }
 }
 
+Container.prototype.onAttached = function(node) {
+    this.adjust()
+}
+
 Container.prototype.moveOnTop = function(i) {
     if (i < this._ls.length - 1) {
         const g = this._ls[i]

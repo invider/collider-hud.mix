@@ -10,6 +10,7 @@ let instances = 0
 const Console = function(dat) {
     if (!this.name) this.name = 'console' + ++instances
 
+    this.focus = false
     this.clip = true
     this.disabled = false
     this.hidden = false
@@ -132,6 +133,7 @@ Console.prototype.onMouseWheel = function(d, x, y, e) {
 
 Console.prototype.evo = function(dt) {
     if (!this.focus) return
+
     this.blinkState -= dt
     if (this.blinkState < 0) {
         this.blinkState = this.blink * 2
@@ -161,4 +163,3 @@ Console.prototype.drawForeground = function() {
 }
     
 module.exports = Console
-
