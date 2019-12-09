@@ -79,6 +79,11 @@ let Hud = function(dat) {
         hud.onKeyUp(e)
     })
 
+    sys.after(trap, 'resize', function(e) {
+        hud.expand()
+        hud.adjust()
+    })
+
     this.saveSize()
 }
 
