@@ -40,6 +40,7 @@ Container.prototype.adjust = function() {
 }
 
 Container.prototype.onAttached = function(node) {
+    sys.LabFrame.prototype.onAttached.call(this, node)
     this.adjust()
 }
 
