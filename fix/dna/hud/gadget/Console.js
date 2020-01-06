@@ -42,17 +42,17 @@ const Console = function(dat) {
         h: this.h-40,
     }))
 
-    this.adjust()
+    this.adjustSliders()
 }
 Console.prototype = Object.create(Container.prototype)
 
 Console.prototype.resize = function(w, h) {
     this.w = w
     this.h = h
-    this.adjust()
+    this.adjustSliders()
 }
 
-Console.prototype.adjust = function() {
+Console.prototype.adjustSliders = function() {
     this.slider.x = this.w - this.sliderWidth
     this.slider.y = 0
     this.slider.w = this.sliderWidth
@@ -91,7 +91,7 @@ Console.prototype.pushText = function(text) {
 
 Console.prototype.print = function(msg) {
     this.pushText(msg)
-    this.adjust()
+    this.adjustSliders()
     this.slider.set(this.lines.length - 1)
 }
 
