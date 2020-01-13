@@ -211,10 +211,13 @@ Window.prototype.resize = function(w, h) {
 }
 
 Window.prototype.adjust = function() {
-    this.tag.x = 0
-    this.tag.y = 0
-    this.tag.w = this.w
-    this.tag.h = this.baseHeight + this.pads.tag*2
+    
+    if (this.tag) {
+        this.tag.x = 0
+        this.tag.y = 0
+        this.tag.w = this.w
+        this.tag.h = this.baseHeight + this.pads.tag*2
+    }
 
     if (this.close) {
         this.close.y = 0
@@ -223,10 +226,12 @@ Window.prototype.adjust = function() {
         this.close.x = this.w - this.tag.h
     }
 
-    this.bar.x = 0
-    this.bar.w = this.w
-    this.bar.h = this.baseHeight + this.pads.tag*2
-    this.bar.y = this.h - this.bar.h
+    if (this.bar) {
+        this.bar.x = 0
+        this.bar.w = this.w
+        this.bar.h = this.baseHeight + this.pads.tag*2
+        this.bar.y = this.h - this.bar.h
+    }
 
     if (this.stretch) {
         this.stretch.y = this.bar.y
@@ -235,11 +240,13 @@ Window.prototype.adjust = function() {
         this.stretch.w = this.bar.h
     }
 
-    this.pane.x = 0
-    this.pane.w = this.w
-    this.pane.y = this.tag.h+1
-    this.pane.h = this.h - this.tag.h - this.bar.h
-    if (sys.isFun(this.pane.adjust)) this.pane.adjust()
+    if (this.pane) {
+        this.pane.x = 0
+        this.pane.w = this.w
+        this.pane.y = this.tag.h+1
+        this.pane.h = this.h - this.tag.h - this.bar.h
+        if (sys.isFun(this.pane.adjust)) this.pane.adjust()
+    }
 }
 
 module.exports = Window
