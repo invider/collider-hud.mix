@@ -1,5 +1,7 @@
 //'use strict'
 
+// a window showing node content
+
 //@depends(/dna/hud/Window)
 const Window = dna.hud.Window
 //@depends(/dna/hud/gadget/DynamicList)
@@ -80,7 +82,7 @@ NodeList.prototype.onKeyDown = function(e) {
     } else if (e.key === '\\') {
         log.dump(this.__.dir)
     } else if (e.key === 'Escape') {
-        this.__.detach()
+        if (this.__.closable) this.__.detach()
     } else {
         DynamicList.prototype.onKeyDown.call(this, e)
     }
@@ -229,6 +231,8 @@ NodeList.prototype.onItemAction = function(i, action) {
         this.open(next)
         this.lastSelect.push(i)
     }
+
+    if (this.__.onStateChange) this.__.onStateChange()
 }
 
 function nodeToIcon(item) {
@@ -314,6 +318,13 @@ const Explorer = function(dat) {
     this.adjust()
 }
 Explorer.prototype = Object.create(Window.prototype)
+
+Explorer.prototype.selectedNode = function() {
+    const item = this.pane.item(this.pane.selected)
+    if (!item) return
+    return item.node
+}
+
 
 Explorer.prototype.open = function(next) {
     this.pane.open(next)

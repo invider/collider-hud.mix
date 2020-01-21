@@ -1,5 +1,7 @@
 'use strict'
 
+// a movable window component
+
 //@depends(/env/hud)
 //@depends(/dna/hud/Container)
 const Container = dna.hud.Container 
@@ -12,6 +14,7 @@ const defaults = {
     resizable: true,
     minifiable: true,
     closable: true,
+    movable: true,
 
     title: '',
     status: '',
@@ -41,7 +44,8 @@ const Tag = function(dat) {
     sys.augment(this, dat)
 }
 Tag.prototype.draw = function() {
-    if (this.__.focus) ctx.fillStyle = this.__._style.tag.baseHi
+    if (this.__.disabled) ctx.fillStyle = this.__._style.tag.baseLow
+    else if (this.__.focus) ctx.fillStyle = this.__._style.tag.baseHi
     else ctx.fillStyle = this.__._style.tag.base
     ctx.fillRect(this.x, this.y, this.w, this.h)
 
@@ -52,11 +56,15 @@ Tag.prototype.draw = function() {
     ctx.fillText(this.__.title, this.w/2,  this.y + this.h/2);
 }
 Tag.prototype.onMouseDrag = function(dx, dy) {
-    this.__.x += dx
-    this.__.y += dy
+    if (this.__.movable) {
+        this.__.x += dx
+        this.__.y += dy
+    }
 }
 Tag.prototype.onDblClick = function() {
-    this.__.detach()
+    if (this.__.closable) {
+        this.__.detach()
+    }
 }
 Tag.prototype.onFocus = function() {
     this.__.captureFocus(this.__.pane)
@@ -157,7 +165,7 @@ const Window = function(dat) {
     if (this.resizable) this.attach(new Stretch())
     if (this.closable) this.attach(new Close())
 
-    if (dat.pane) {
+    if (dat && dat.pane) {
         this.attach(dat.pane, 'pane')
     } else {
         this.attach(new Container({

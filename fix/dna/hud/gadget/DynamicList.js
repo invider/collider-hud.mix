@@ -108,9 +108,11 @@ DynamicList.prototype.onItemAction = function(i, a) {
 DynamicList.prototype.moveCursor = function(shift) {
     this.selected = lib.math.limit(this.selected + shift, 0, this.max)
     this.adjustPosition()
+    if (this.onMove) this.onMove()
 }
 
 DynamicList.prototype.onKeyDown = function(e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return
     switch(e.key) {
     case 'ArrowDown': case 'j': this.moveCursor(1); break;
     case 'ArrowUp': case 'k': this.moveCursor(-1); break;

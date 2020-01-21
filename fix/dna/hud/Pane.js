@@ -1,5 +1,7 @@
 'use strict'
 
+// a rudimentary graphical HUD component
+
 const Pane = function(st) {
     this.x = 0
     this.y = 0

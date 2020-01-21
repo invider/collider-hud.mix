@@ -1,5 +1,7 @@
 'use strict'
 
+// an element to group and organize other elements
+
 let instances = 0
 
 const defaults = {

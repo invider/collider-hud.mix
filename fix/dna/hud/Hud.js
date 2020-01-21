@@ -1,5 +1,8 @@
 'use strict'
 
+//
+// top-level UI container that handles all the events
+//
 // @depends(/dna/hud/Container)
 let instances = 0
 let Hud = function(dat) {
