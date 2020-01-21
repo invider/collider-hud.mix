@@ -29,48 +29,73 @@ let Hud = function(dat) {
     let hud = this
 
     sys.after(trap, 'click', function(e) {
+        if (hud.hidden || hud.disabled
+                || hud._.hidden || hud._.disabled) return
+
         let x = e.pageX - hud.x
         let y = e.pageY - hud.y
         hud.onClick(x, y, e)
     })
 
     sys.after(trap, 'dblClick', function(e) {
+        if (hud.hidden || hud.disabled
+                || hud._.hidden || hud._.disabled) return
+
         let x = e.pageX - hud.x
         let y = e.pageY - hud.y
         hud.onDblClick(x, y, e)
     })
 
-    sys.after(trap, 'mouseUp', function(e) {
-        let x = e.pageX - hud.x
-        let y = e.pageY - hud.y
-        hud.onMouseUp(x, y, e.button, e)
-    })
-
     sys.after(trap, 'mouseDown', function(e) {
+        if (hud.hidden || hud.disabled
+                || hud._.hidden || hud._.disabled) return
+
         let x = e.pageX - hud.x
         let y = e.pageY - hud.y
         hud.onMouseDown(x, y, e.button, e)
     })
 
+    sys.after(trap, 'mouseUp', function(e) {
+        if (hud.hidden || hud.disabled
+                || hud._.hidden || hud._.disabled) return
+
+        let x = e.pageX - hud.x
+        let y = e.pageY - hud.y
+        hud.onMouseUp(x, y, e.button, e)
+    })
+
+
     sys.after(trap, 'mouseMove', function(e) {
+        if (hud.hidden || hud.disabled
+                || hud._.hidden || hud._.disabled) return
+
         let x = e.pageX - hud.x
         let y = e.pageY - hud.y
         hud.onMouseMove(x, y, e)
     })
 
     sys.after(trap, 'mouseWheel', function(e) {
+        if (hud.hidden || hud.disabled
+                || hud._.hidden || hud._.disabled) return
+
         let x = e.pageX - hud.x
         let y = e.pageY - hud.y
         hud.onMouseWheel(e.wheelDelta, x, y, e)
     })
 
     sys.after(trap, 'touchStart', function(e) {
+        if (hud.hidden || hud.disabled
+                || hud._.hidden || hud._.disabled) return
+
         let x = e.touches[0].clientX * (ctx.width/window.innerWidth) - hud.x
         let y = e.touches[0].clientY * (ctx.height/window.innerHeight) - hud.y
         hud.onTouchStart(x, y, e)
     })
 
     sys.after(trap, 'touchEnd', function(e) {
+        if (hud.hidden || hud.disabled
+                || hud._.hidden || hud._.disabled) return
+
         hud.onTouchEnd(e)
     })
 

@@ -166,9 +166,9 @@ const Window = function(dat) {
     if (this.closable) this.attach(new Close())
 
     if (dat && dat.pane) {
-        this.attach(dat.pane, 'pane')
+        this.setPane(dat.pane)
     } else {
-        this.attach(new Container({
+        this.setPane(new Container({
             name: 'pane',
             attach: function(node, name) {
                 Container.prototype.attach.call(this, node, name)
@@ -182,6 +182,14 @@ Window.prototype = Object.create(Container.prototype)
 
 Window.prototype.init = function() {
     this.injectStyle('window')
+}
+
+Window.prototype.setPane = function(pane) {
+    this.attach(pane, 'pane')
+}
+
+Window.prototype.attach = function(node, name) {
+    Container.prototype.attach.apply(this, arguments)
 }
 
 Window.prototype.injectStyle = function(b) {
@@ -249,8 +257,8 @@ Window.prototype.adjust = function() {
     }
 
     if (this.pane) {
-        this.pane.x = 0
-        this.pane.w = this.w
+        this.pane.x = 2
+        this.pane.w = this.w - 4
         this.pane.y = this.tag.h+1
         this.pane.h = this.h - this.tag.h - this.bar.h
         if (sys.isFun(this.pane.adjust)) this.pane.adjust()
