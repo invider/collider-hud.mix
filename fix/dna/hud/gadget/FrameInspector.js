@@ -2,10 +2,20 @@
 
 // a window showing node content
 
-//@depends(/dna/hud/Window)
-const Window = dna.hud.Window
+//@depends(/dna/hud/Container)
+const Container = dna.hud.Container
 //@depends(/dna/hud/gadget/DynamicList)
 const DynamicList = dna.hud.gadget.DynamicList
+
+const defaults = {
+    status: '/',
+    dir: $,
+    trail: [],
+    x: 0,
+    y: 0,
+    w: 200,
+    h: 200,
+}
 
 function mark(ch, n) {
     let s = ''
@@ -63,33 +73,36 @@ function nodeTitle(node, dir, i, key) {
     return title
 }
 
-const NodeList = function(dat) {
+const FrameInspector = function(dat) {
     this.lastPos = []
     this.lastSelect = []
     this.lastName = []
+    augment(this, defaults)
     DynamicList.call(this, dat)
-}
-NodeList.prototype = Object.create(DynamicList.prototype)
 
-NodeList.prototype.onKeyDown = function(e) {
+    this.adjust()
+}
+FrameInspector.prototype = Object.create(DynamicList.prototype)
+
+FrameInspector.prototype.onKeyDown = function(e) {
     if (e.key === 'Enter' && e.shiftKey) {
         if (this.selected >= 0) this.onItemAction(this.selected, 3);
     } else if (e.key === 'Backspace') {
-        if (this.__.trail.length > 0) {
-            this.__.dir = this.__.trail.pop()
-            this.__.pane.updatePath()
+        if (this.trail.length > 0) {
+            this.dir = this.trail.pop()
+            this.updatePath()
         }
     } else if (e.key === '\\') {
-        log.dump(this.__.dir)
+        log.dump(this.dir)
     } else if (e.key === 'Escape') {
-        if (this.__.closable) this.__.detach()
+        if (this.closable) this.detach()
     } else {
         DynamicList.prototype.onKeyDown.call(this, e)
     }
 }
 
-NodeList.prototype.updatePath = function() {
-    let t = this.__.dir
+FrameInspector.prototype.updatePath = function() {
+    let t = this.dir
     let path = findName(t)
 
     while(t.__) {
@@ -98,15 +111,15 @@ NodeList.prototype.updatePath = function() {
         if (name === '/') name = ''
         path = name + '/' + path
     }
-    if (path === 'anonymous') this.__.status = ''
+    if (path === 'anonymous') this.status = ''
     else {
-        this.__.status = path
-        this.__.lastPath = path
+        this.status = path
+        this.lastPath = path
     }
 }
 
-NodeList.prototype.item = function(i, d) {
-    const dir = d? d : this.__.dir
+FrameInspector.prototype.item = function(i, d) {
+    const dir = d? d : this.dir
 
     let sh = 0
     if (dir.__) {
@@ -146,37 +159,37 @@ NodeList.prototype.item = function(i, d) {
     }
 }
 
-NodeList.prototype.open = function(next) {
+FrameInspector.prototype.open = function(next) {
     if (next && (sys.isObj(next) || sys.isFrame(next))) {
         this.lastName.push(findName(next))
         this.lastPos.push(this.pos)
         this.pos = 0
         this.selected = 0
         this.slider.pos = 0
-        this.__.trail.push(this.__.dir)
+        this.trail.push(this.dir)
         if (sys.isFrame(next)) {
-            this.__.dir = next
+            this.dir = next
             //this.max = next._ls.length
         } else if (sys.isObj(next)) {
             // normalize first
-            this.__.dir = next
+            this.dir = next
             //this.max = 0
             for (let k in next) this.max++
             /*
             // Why did I make that?
-            this.__.dir = {
+            this.dir = {
                 _dir: {},
                 _ls: [],
             }
 
             Object.keys(next).forEach(k => {
-                this.__.dir[k] = next[k]
+                this.dir[k] = next[k]
                 if (!k.startsWith('_')) {
-                    this.__.dir._dir[k] = next[k]
-                    this.__.dir._ls.push(next[k])
+                    this.dir._dir[k] = next[k]
+                    this.dir._ls.push(next[k])
                 }
             })
-            this.max = this.__.dir._ls.length
+            this.max = this.dir._ls.length
             */
         }
         this.updatePath()
@@ -187,11 +200,11 @@ NodeList.prototype.open = function(next) {
     }
 }
 
-NodeList.prototype.onItemAction = function(i, action) {
+FrameInspector.prototype.onItemAction = function(i, action) {
     const item = this.item(i)
 
     if ((item.name === '..' && action === 0) || action === 2) {
-        if (this.__.dir.__) {
+        if (this.dir.__) {
             // going up the tree
             let pos = 0
             let sel = 0
@@ -200,12 +213,12 @@ NodeList.prototype.onItemAction = function(i, action) {
                 sel = this.lastSelect.pop()
             }
 
-            this.__.trail.push(this.__.dir)
-            this.__.dir = this.__.dir.__
+            this.trail.push(this.dir)
+            this.dir = this.dir.__
             this.pos = pos
             this.selected = sel
             this.slider.pos = pos
-            //this.max = this.__.dir._ls.length
+            //this.max = this.dir._ls.length
             this.updatePath()
             this.adjust()
         }
@@ -215,13 +228,13 @@ NodeList.prototype.onItemAction = function(i, action) {
     } else if (action === 3) {
         const next = item.node
         if (next && (sys.isObj(next) || sys.isFrame(next))) {
-            const expl = new Explorer({
-                x: this.__.x + this.__.w,
-                y: this.__.y,
-                w: this.__.w,
-                h: this.__.h,
+            const expl = new FrameInspector({
+                x: this.x + this.w,
+                y: this.y,
+                w: this.w,
+                h: this.h,
             })
-            this.__.__.attach(expl)
+            this.__.attach(expl)
             expl.trail.push(expl.dir)
             expl.dir = next
             expl.pane.updatePath()
@@ -232,7 +245,7 @@ NodeList.prototype.onItemAction = function(i, action) {
         this.lastSelect.push(i)
     }
 
-    if (this.__.onStateChange) this.__.onStateChange()
+    if (this.onStateChange) this.onStateChange()
 }
 
 function nodeToIcon(item) {
@@ -264,7 +277,7 @@ function nodeToIcon(item) {
     return res.hud.icon.file
 }
 
-NodeList.prototype.drawItem = function(item, i, iy) {
+FrameInspector.prototype.drawItem = function(item, i, iy) {
     let x = this.slider.w + this.itemsPadding
     const h = this.itemHeight()
     const iconToTextSpacing = 10
@@ -288,26 +301,16 @@ NodeList.prototype.drawItem = function(item, i, iy) {
     return h
 }
 
-const defaults = {
-    title: '',
-    status: '/',
-    x: 0,
-    y: 0,
-    w: 200,
-    h: 200,
-    dir: _._$,
-    trail: [],
-}
-
+/*
 let instances = 0
-const Explorer = function(dat) {
+const FrameInspector = function(dat) {
     if (!this.name) this.name = 'explorer' + ++instances
     sys.supplement(this, defaults)
 
-    Window.call(this, dat)
+    Container.call(this, dat)
     sys.augment(this, dat)
 
-    this.attach(new NodeList({
+    this.attach(new FrameInspector({
         x: 0,
         y: 0,
         w: 10,
@@ -317,18 +320,19 @@ const Explorer = function(dat) {
     this.pane.updatePath()
     this.adjust()
 }
-Explorer.prototype = Object.create(Window.prototype)
+FrameInspector.prototype = Object.create(Window.prototype)
 
-Explorer.prototype.selectedNode = function() {
+FrameInspector.prototype.selectedNode = function() {
     const item = this.pane.item(this.pane.selected)
     if (!item) return
     return item.node
 }
 
 
-Explorer.prototype.open = function(next) {
+FrameInspector.prototype.open = function(next) {
     this.pane.open(next)
 }
+*/
 
-module.exports = Explorer
+module.exports = FrameInspector
 

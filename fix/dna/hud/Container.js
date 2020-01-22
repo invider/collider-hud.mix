@@ -59,12 +59,11 @@ Container.prototype.onClick = function(x, y, e) {
     //log.debug('click on [' + this.name + '] @' + x + 'x' + y)
 
     let pending = true
-    //if (this.name === 'hud') log.out('==== click on: ' + this.name)
+
     for (let i = this._ls.length-1; i >= 0; i--) {
         const g = this._ls[i]
         if (g.hidden || g.disabled || !g._sizable) continue
 
-        //if (this.name.startsWith('hud')) console.log(sys.path(g) + ' @' + i)
         const lx = x - g.x
         const ly = y - g.y
         if (pending && lx >= 0 && lx <= g.w && ly >= 0 && ly <= g.h) {
@@ -72,25 +71,19 @@ Container.prototype.onClick = function(x, y, e) {
                 g.onClick(lx, ly, e)
             }
             if (sys.isFun(g.onFocus)) {
-                //if (this.name.startsWith('hud')) console.log('capturing ' + sys.path(g) + ' @' + i)
                 this.captureFocus(g)
                 if (!g.keepZ) this.moveOnTop(i)
             }
             pending = false
 
-        } else {
-            //if (g.focus && sys.isFun(g.onUnfocus)) {
-            //    this.releaseFocus(g)
-            //    g.onUnfocus()
-            //}
-        }
+        } 
     }
     return !pending
 }
 
 Container.prototype.onDblClick = function(x, y, e) {
     this._ls.forEach(g => {
-        if (g.hidden || g.disabled) return
+        if (g.hidden || g.disabled || !g._sizable) return
 
         const lx = x - g.x
         const ly = y - g.y
@@ -188,14 +181,11 @@ Container.prototype.onTouchStart = function(x, y, e) {
         const g = this._ls[i]
         const lx = x - g.x
         const ly = y - g.y
-        env.statusInfo.t1 = 'picking ' + g.name + ' @'
-            + Math.round(lx) + 'x' + Math.round(ly)
-        if (focusPending && lx >= 0 && lx <= g.w && ly >= 0 && ly <= g.h) {
-            env.statusInfo.t1 = Math.round(lab.world.saucer.x)
-                + ': ' + ' fit with coords ' + g.name
+
+        if (focusPending && lx >= 0 && lx <= g.w
+                        && ly >= 0 && ly <= g.h) {
 
             if (sys.isFun(g.onTouchStart)) {
-                env.statusInfo.t1 = lab.world.saucer.x + ': ' + ' got the fun!'
                 g.onTouchStart(lx, ly, e)
             }
             if (sys.isFun(g.onTouchDrag)) {
