@@ -79,6 +79,17 @@ NodeInspector.prototype.open = function(next) {
     }
 }
 
+NodeInspector.prototype.select = function(node) {
+    if (!this.active || this.active.name !== 'frameInspector') return
+    if (!node) return
+    
+    let i = this.dir._ls.indexOf(node)
+    if (i >= 0) {
+        if (this.dir.__) i++
+        this.active.selected = i
+    }
+}
+
 NodeInspector.prototype.getDir = function() {
     if (this.active.name === 'frameInspector') {
         this.dir = this.active.dir

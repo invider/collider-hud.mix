@@ -231,6 +231,7 @@ FrameInspector.prototype.onItemAction = function(i, action) {
     } else if (action === 1) {
         log.out(item.node)
         log.dump(item.node)
+
     } else if (action === 3) {
         const next = item.node
         if (next && (sys.isObj(next) || sys.isFrame(next))) {
@@ -245,6 +246,7 @@ FrameInspector.prototype.onItemAction = function(i, action) {
             expl.dir = next
             expl.pane.updatePath()
         }
+
     } else {
         const next = item.node
         this.__.open(next)
