@@ -84,6 +84,12 @@ TextView.prototype.moveCursor = function(shift) {
     if (this.onMove) this.onMove()
 }
 
+TextView.prototype.setText = function(txt) {
+    this.text = txt
+    this.pane.setText(txt)
+    this.sync()
+}
+
 TextView.prototype.onKeyDown = function(e) {
     if (!this.focus) return
     if (e.altKey || e.ctrlKey || e.metaKey) return

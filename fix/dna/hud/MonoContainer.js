@@ -31,6 +31,31 @@ MonoContainer.prototype.activate = function(id) {
     this.adjust()
 }
 
+MonoContainer.prototype.drawContent = function() {
+    //for (let i = this._ls.length - 1; i >= 0; i--) {
+    const g = this.active
+    if (g && g.draw && !g.hidden) {
+        g.draw()
+    }
+}
+
+MonoContainer.prototype.draw = function() {
+    if (this.hidden) return
+    ctx.save()
+    ctx.translate(this.x, this.y)
+    if (this.clip) {
+        ctx.beginPath()
+        ctx.rect(0,0,this.w,this.h)
+        ctx.clip()
+    }
+
+    this.drawBackground()
+    this.drawContent()
+    this.drawForeground()
+
+    ctx.restore()
+}
+
 MonoContainer.prototype.onClick = function(x, y, e) {
     //if (x < 0 || y < 0 || x > this.w || y > this.h) return
     //log.debug('click on [' + this.name + '] @' + x + 'x' + y)
@@ -197,31 +222,6 @@ MonoContainer.prototype.onReleasedFocus = function() {
             g.onReleasedFocus()
         }
     }
-}
-
-MonoContainer.prototype.drawContent = function() {
-    //for (let i = this._ls.length - 1; i >= 0; i--) {
-    const g = this.active
-    if (g && g.draw && !g.hidden) {
-        g.draw()
-    }
-}
-
-MonoContainer.prototype.draw = function() {
-    if (this.hidden) return
-    ctx.save()
-    ctx.translate(this.x, this.y)
-    if (this.clip) {
-        ctx.beginPath()
-        ctx.rect(0,0,this.w,this.h)
-        ctx.clip()
-    }
-
-    this.drawBackground()
-    this.drawContent()
-    this.drawForeground()
-
-    ctx.restore()
 }
 
 module.exports = MonoContainer

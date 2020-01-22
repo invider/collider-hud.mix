@@ -114,13 +114,35 @@ DynamicList.prototype.moveCursor = function(shift) {
 DynamicList.prototype.onKeyDown = function(e) {
     if (e.altKey || e.ctrlKey || e.metaKey) return
     switch(e.key) {
-    case 'ArrowDown': case 'j': this.moveCursor(1); break;
-    case 'ArrowUp': case 'k': this.moveCursor(-1); break;
-    case 'ArrowLeft': case 'PageUp': this.moveCursor(-this.span+1); break;
-    case 'ArrowRight': case 'PageDown': this.moveCursor(this.span-1); break;
-    case 'Enter': case 'l': if (this.selected >= 0) this.onItemAction(this.selected, 0); break;
-    case ' ': if (this.selected >= 0) this.onItemAction(this.selected, 1); break;
-    case 'Backspace': case 'h': if (this.selected >= 0) this.onItemAction(this.selected, 2); break;
+    case 'ArrowDown': case 'j':
+            this.moveCursor(1)
+            break
+
+    case 'ArrowUp': case 'k':
+            this.moveCursor(-1)
+            break
+
+    case 'ArrowLeft': case 'PageUp':
+            this.moveCursor(-this.span+1)
+            break;
+
+    case 'ArrowRight': case 'PageDown':
+            this.moveCursor(this.span-1)
+            break
+
+    case 'Enter': case 'l':
+        if (this.selected >= 0) this.onItemAction(this.selected, 0)
+        if (this.onMove) this.onMove()
+        break
+
+    case ' ': if (this.selected >= 0)
+            this.onItemAction(this.selected, 1)
+            break
+
+    case 'Backspace': case 'h':
+            if (this.selected >= 0) this.onItemAction(this.selected, 2)
+            if (this.onMove) this.onMove()
+            break
     }
 }
 

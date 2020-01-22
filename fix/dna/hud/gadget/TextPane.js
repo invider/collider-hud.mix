@@ -32,6 +32,11 @@ function TextPane(st) {
 }
 TextPane.prototype = Object.create(Pane.prototype)
 
+TextPane.prototype.setText = function(txt) {
+    this.text = txt
+    this.adjust()
+}
+
 TextPane.prototype.adjust = function() {
     this.prerender()
     this.moveTo(this.ty)

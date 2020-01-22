@@ -159,6 +159,12 @@ FrameInspector.prototype.item = function(i, d) {
     }
 }
 
+FrameInspector.prototype.selectedNode = function() {
+    const item = this.item(this.selected)
+    if (!item) return
+    return item.node
+}
+
 FrameInspector.prototype.open = function(next) {
     if (next && (sys.isObj(next) || sys.isFrame(next))) {
         this.lastName.push(findName(next))
@@ -241,7 +247,7 @@ FrameInspector.prototype.onItemAction = function(i, action) {
         }
     } else {
         const next = item.node
-        this.open(next)
+        this.__.open(next)
         this.lastSelect.push(i)
     }
 
@@ -300,39 +306,6 @@ FrameInspector.prototype.drawItem = function(item, i, iy) {
     ctx.fillText(item.name, x, iy + this.itemHeight()/2)
     return h
 }
-
-/*
-let instances = 0
-const FrameInspector = function(dat) {
-    if (!this.name) this.name = 'explorer' + ++instances
-    sys.supplement(this, defaults)
-
-    Container.call(this, dat)
-    sys.augment(this, dat)
-
-    this.attach(new FrameInspector({
-        x: 0,
-        y: 0,
-        w: 10,
-        h: 10,
-        itemsPadding: 10,
-    }), 'pane')
-    this.pane.updatePath()
-    this.adjust()
-}
-FrameInspector.prototype = Object.create(Window.prototype)
-
-FrameInspector.prototype.selectedNode = function() {
-    const item = this.pane.item(this.pane.selected)
-    if (!item) return
-    return item.node
-}
-
-
-FrameInspector.prototype.open = function(next) {
-    this.pane.open(next)
-}
-*/
 
 module.exports = FrameInspector
 
